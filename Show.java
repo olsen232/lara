@@ -40,7 +40,8 @@ public class Show {
           synchronized(anims) {
             for (Animation anim : anims) {
               BufferedImage f = anim.tFrame(t);
-              drawFlippedCentered(g, f, (x+=50), 100);
+              boolean flip = (t / anim.tLength()) % 2 == 1;
+              drawCentered(g, f, (x+=50), 100, flip);
             }
           }
         }
@@ -53,13 +54,18 @@ public class Show {
         @Override
         public void actionPerformed(ActionEvent e) {
           t++;
-            panel.repaint();
+          panel.repaint();
         }
       }).start();
     }
     synchronized(anims) {
       anims.add(anim);
     }
+  }
+
+  private static void drawCentered(Graphics g, BufferedImage b, int x, int y, boolean flip) {
+    if (flip) drawFlippedCentered(g, b, x, y);
+    else drawCentered(g, b, x, y);
   }
 
   private static void drawCentered(Graphics g, BufferedImage b, int x, int y) {

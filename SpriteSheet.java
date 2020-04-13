@@ -5,23 +5,13 @@ import java.util.ArrayList;
 
 public class SpriteSheet {
 
-  public final List<Box> boxes;
-  private List<BufferedImage> contents;
+  public final Box[] boxes;
 
-  public SpriteSheet(List<Box> boxes) {
+  public SpriteSheet(Box[] boxes) {
     this.boxes = boxes;
   }
 
-  public List<BufferedImage> contents() {
-    if (this.contents == null) {
-      this.contents = new ArrayList<>();
-      for (Box box : boxes) {
-        contents.add(box.content);
-      }
-    }
-    return this.contents;
-  }
-
+  private static final Box[] BOX_ARRAY = new Box[0];
   public static SpriteSheet load(BufferedImage in) {
     List<Box> boxes = new ArrayList<>();
     for (int y = 0; y < in.getHeight(); y++) {
@@ -37,7 +27,7 @@ public class SpriteSheet {
         }
       }
     }
-    return new SpriteSheet(boxes);
+    return new SpriteSheet(boxes.toArray(BOX_ARRAY));
   }
 
   static Box findBox(BufferedImage in, int x, int y) {

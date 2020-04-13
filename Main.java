@@ -22,8 +22,9 @@ public class Main {
     for (SpriteSheet.Box b : spriteSheet.boxes) {
       anims.add(new Animation(b.splitIntoFrames(), 2));
     }
-    anims.add(Animation.concat(anims.get(0), anims.get(1)));
-    anims.add(Animation.concat(anims.get(0), anims.get(2), anims.get(3), anims.get(2)));
+    Animation[] a = anims.toArray(new Animation[0]);
+    anims.add(Animation.concat(a[0], a[0], a[1], a[0], a[3], a[4], a[4], a[3], a[0], a[2]));
+    //anims.add(Animation.concat(anims.get(0), anims.get(2), anims.get(3), anims.get(2)));
     for (Animation anim : anims) {
       Show.show(anim);
     }

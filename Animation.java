@@ -27,6 +27,10 @@ public class Animation {
     return frames.length;
   }
 
+  public int tLength() {
+    return frames.length * timePerFrame;
+  }
+
   public static Animation concat(Animation... anims) {
     int length = 0;
     for (Animation anim : anims) {
