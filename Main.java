@@ -1,3 +1,4 @@
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.ArrayList;
@@ -17,22 +18,38 @@ public class Main {
     BufferedImage im = ImageIO.read(new File("lara_main.png"));
     SpriteSheet spriteSheet = SpriteSheet.load(im);
     int i = 0;
+    List<Animation> anims = new ArrayList<>();
     for (SpriteSheet.Box b : spriteSheet.boxes) {
-      Animation anim = new Animation(b.splitIntoFrames(), 2);
-      //Show.show(anim);
+      anims.add(new Animation(b.splitIntoFrames(), 2));
+    }
+    anims.add(Animation.concat(anims.get(0), anims.get(1)));
+    anims.add(Animation.concat(anims.get(0), anims.get(2), anims.get(3), anims.get(2)));
+    for (Animation anim : anims) {
+      Show.show(anim);
+    }
+  }
 
-      ImageOutputStream output = 
-        new FileImageOutputStream(new File((i++) + ".gif"));
-      
-      GifSequenceWriter writer = 
-        new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, 1, false);
-      
+  private static void writeToGif(Animation anim, String filename) throws Exception {
+      ImageOutputStream output = new FileImageOutputStream(new File(filename));   
+      GifSequenceWriter writer = new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, 1, false);
+      writer.writeToSequence(allocateCavas(anim));
       for (BufferedImage f : anim.frames) {
         writer.writeToSequence(f);
       }
-      
       writer.close();
-      output.close();  
+      output.close();
+  }
+
+  private static BufferedImage allocateCavas(Animation anim) {
+    int w = 0;
+    int h = 0;
+    for (BufferedImage f : anim.frames) {
+      w = Math.max(w, f.getWidth());
+      h = Math.max(h, f.getHeight());
     }
+    BufferedImage result = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+    Graphics g = result.getGraphics();
+    g.fillRect(0, 0, w, h);
+    return result;
   }
 }

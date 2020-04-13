@@ -14,7 +14,7 @@ public class Show {
     if (iframe == null) {
       iframe = new JFrame();
       iframe.getContentPane().setLayout(new FlowLayout());
-      iframe.setBounds(50, 50, 500, 500);
+      iframe.setBounds(50, 50, 1000, 500);
       iframe.setVisible(true);
       iframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -35,17 +35,18 @@ public class Show {
         @Override
         public void paint(Graphics g) {
           super.paint(g);
-          int x = 5;
+          int x = 25;
           ((java.awt.Graphics2D)g).scale(2, 2);
           synchronized(anims) {
             for (Animation anim : anims) {
-              g.drawImage(anim.tFrame(t), x += 50, 5, null);
+              BufferedImage f = anim.tFrame(t);
+              drawFlippedCentered(g, f, (x+=50), 100);
             }
           }
         }
       };   
       aframe.setContentPane(panel);
-      aframe.setBounds(50, 50, 500, 500);
+      aframe.setBounds(50, 50, 1000, 500);
       aframe.setVisible(true);
       aframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       new Timer(50, new ActionListener() {
@@ -59,5 +60,15 @@ public class Show {
     synchronized(anims) {
       anims.add(anim);
     }
+  }
+
+  private static void drawCentered(Graphics g, BufferedImage b, int x, int y) {
+    g.drawImage(b, x - b.getWidth() / 2, y - b.getHeight() / 2, null);
+  }
+
+  private static void drawFlippedCentered(Graphics g, BufferedImage b, int x, int y) {
+    int w = b.getWidth();
+    int h = b.getHeight();
+    ((Graphics2D) g).drawImage(b, x + w / 2, y - h / 2, -w, h, null);
   }
 }

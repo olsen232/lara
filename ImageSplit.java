@@ -5,64 +5,39 @@ import java.util.List;
 
 public class ImageSplit {
 
-  public static List<BufferedImage> horizontal(BufferedImage in) {
+  public static List<BufferedImage> horizontal(BufferedImage in, int cols) {
     List<BufferedImage> result = new ArrayList<>();
-    horizontal(in, result);
+    horizontalTile(in, cols, result);
     return result;
   }
 
-  public static void horizontal(BufferedImage in, List<BufferedImage> result) {
-    int visibleCols = 0;
-    for (int x = 0; x <= in.getWidth(); x++) {
-      if (isVisibleCol(in, x)) {
-        visibleCols++;
-      } else {
-        if (visibleCols != 0) {
-          result.add(in.getSubimage(x - visibleCols, 0, visibleCols, in.getHeight()));
-          visibleCols = 0;
-        }
-      }
-    }
+  public static void horizontalTile(BufferedImage in, int cols, List<BufferedImage> result) {
+    tile(in, cols, 1, result);
   }
 
-  public static boolean isVisibleCol(BufferedImage in, int x) {
-    if (x < 0 || x >= in.getWidth()) return false;
-    for (int y = 0; y < in.getHeight(); y++) {
-      if (isVisiblePixel(in, x, y)) return true;
-    }
-    return false;
-  }
-
-  public static List<BufferedImage> vertical(BufferedImage in) {
+  public static List<BufferedImage> verticalTile(BufferedImage in, int rows) {
     List<BufferedImage> result = new ArrayList<>();
-    vertical(in, result);
+    verticalTile(in, rows, result);
     return result;
   }
 
-  public static void vertical(BufferedImage in, List<BufferedImage> result) {
-    int visibleRows = 0;
-    for (int y = 0; y <= in.getHeight(); y++) {
-      if (isVisibleRow(in, y)) {
-        visibleRows++;
-      } else {
-        if (visibleRows != 0) {
-          result.add(in.getSubimage(0, y - visibleRows, in.getWidth(), visibleRows));
-          visibleRows = 0;
-        }
+  public static void verticalTile(BufferedImage in, int rows, List<BufferedImage> result) {
+    tile(in, 1, rows, result);
+  }
+
+  public static List<BufferedImage> tile(BufferedImage in, int cols, int rows) {
+    List<BufferedImage> result = new ArrayList<>();
+    tile(in, cols, rows, result);
+    return result;
+  }
+
+  public static void tile(BufferedImage in, int cols, int rows, List<BufferedImage> result) {
+    int w = in.getWidth() / cols;
+    int h = in.getHeight() / rows;
+    for (int y = 0; y < rows; y++) {
+      for (int x = 0; x < cols; x++) {
+        result.add(in.getSubimage(x * w, y * h, w, h));
       }
     }
   }
-
-  public static boolean isVisibleRow(BufferedImage in, int y) {
-    if (y < 0 || y >= in.getHeight()) return false;
-    for (int x = 0; x < in.getWidth(); x++) {
-      if (isVisiblePixel(in, x, y)) return true;
-    }
-    return false;
-  }
-
-  public static boolean isVisiblePixel(BufferedImage in, int x, int y) {
-    return (in.getRGB(x, y) & 0xff000000) != 0;
-  }
-
 }
