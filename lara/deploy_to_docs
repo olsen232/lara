@@ -1,0 +1,5 @@
+#!/bin/bash
+
+rm -rf ../docs/lara/
+cp -r html/target/lara-html-1.0-SNAPSHOT/lara/ ../docs/lara/
+cp ../lara.html ../docs/index.html

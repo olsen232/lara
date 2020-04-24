@@ -1,0 +1,11 @@
+<module rename-to='lara'>
+  <inherits name='playn.Scene'/>
+  <inherits name='MainAssets'/>
+
+  <source path='core'/>
+  <source path='html'/>
+
+  <public path="resources" />
+
+  <entry-point class='tr.html.MainHtml'/>
+</module>
