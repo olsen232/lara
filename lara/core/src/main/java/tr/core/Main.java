@@ -17,10 +17,7 @@ public class Main extends SceneGame {
 
   static int FRAME_MS = 1000 / 30;
 
-  private int frameCounter = 0;
   private int frameBuffer = 0;
-
-  private Lara lara = new Lara();
 
   public Main(Platform platform) {
     super(platform.raw, FRAME_MS);
@@ -37,9 +34,13 @@ public class Main extends SceneGame {
   @Override
   public void update(Clock clock) {
     frameBuffer = 0;
-    
-    frameCounter++;
-    loader.tick();
+
+    if (!loader.done()) {
+      loader.tick();
+      return;
+    }
+
+    Lara.INSTANCE.tick();
   }
   
   @Override
@@ -60,7 +61,7 @@ public class Main extends SceneGame {
         return;
       }
       
-      lara.draw(surface, frameCounter);
+      Lara.INSTANCE.draw(surface);
       
     } finally {
       surface.end();
@@ -75,7 +76,8 @@ public class Main extends SceneGame {
       if (e instanceof Keyboard.TypedEvent) {
       
       } else if (e instanceof Keyboard.KeyEvent) {
-
+        Keyboard.KeyEvent ke = (Keyboard.KeyEvent) e;
+        ControlState.INSTANCE.onKeyChange(ke.key, ke.down);
       }
     }
   };
