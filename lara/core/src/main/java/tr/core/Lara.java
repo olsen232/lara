@@ -65,6 +65,8 @@ public class Lara {
   public void draw(Surface surface) {
     Font.WHITE.singleLine(surface, x + ", " + y, 50, 50);
 
+    surface.fillRect(x * TILE_SIZE, (y - 1) * TILE_SIZE, TILE_SIZE, 2 * TILE_SIZE, 0x88888888);
+
     int xPx = x * TILE_SIZE + HALF_TILE_SIZE + maybeFlip(movement.xPx());
     int yPx = (y + 1) * TILE_SIZE + movement.yPx();
     Image image = (tween != null) ? tween.currentFrame() : anim.currentFrame();

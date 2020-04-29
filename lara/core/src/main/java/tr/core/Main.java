@@ -62,9 +62,11 @@ public class Main extends SceneGame {
       }
 
       for (int x = 0; x < SCREEN_WIDTH; x += TILE_SIZE) {
-        surface.fillRect(x, SCREEN_HEIGHT/2, 1, SCREEN_HEIGHT, 0xff888888);
+        surface.fillRect(x, TILE_SIZE*8, 1, SCREEN_HEIGHT, 0xff888888);
       }
       surface.fillRect(0, SCREEN_HEIGHT/2, SCREEN_WIDTH, 1, 0xff888888);
+      surface.fillRect(0, TILE_SIZE*8, SCREEN_WIDTH, 1, 0xff888888);
+
       
       Lara.INSTANCE.draw(surface);
       
