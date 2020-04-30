@@ -5,6 +5,7 @@ public enum ControlState {
   //public final float mouseScale;
 
   private int controlBits = 0;
+  private Control freshControl = null;
 
   public void onKeyChange(playn.core.Key k, boolean pressed) {
     Control c = Control.forKey(k);
@@ -15,6 +16,7 @@ public enum ControlState {
     int lastControlBits = controlBits;
     if (pressed) {
       controlBits |= c.bitCode;
+      if (lastControlBits != controlBits) freshControl = c;
     } else {
       controlBits &= ~c.bitCode;
     }
@@ -29,5 +31,27 @@ public enum ControlState {
 
   public boolean isPressed(Control c) {
     return (controlBits & c.bitCode) != 0;
+  }
+
+  public boolean isFresh(Control c) {
+    if (freshControl == c) {
+      freshControl = null;
+      return true;
+    }
+    return false;
+  }
+
+  public Control freshControl() {
+    Control result = freshControl;
+    freshControl = null;
+    return result;
+  }
+
+  public boolean isAnyFreshControl() {
+    return freshControl() != null;
+  }
+
+  public void clearFresh() {
+    freshControl = null;
   }
 }

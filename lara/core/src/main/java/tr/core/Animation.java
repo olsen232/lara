@@ -44,6 +44,16 @@ public final class Animation {
     return new Animation(newFrames);
   }
 
+  public Animation reverse() {
+    if (this == EMPTY) return this;
+    Image[] newFrames = new Image[frames.length];
+    int end = newFrames.length - 1;
+    for (int i = 0; i < frames.length; i++) {
+      newFrames[end - i] = frames[i];
+    }
+    return new Animation(newFrames);
+  }
+
   public Animation boomerang() {
     if (this == EMPTY) return this;
     Image[] newFrames = new Image[frames.length * 2];

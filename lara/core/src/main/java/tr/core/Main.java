@@ -61,7 +61,10 @@ public class Main extends SceneGame {
         return;
       }
 
+      int xx = 0;
       for (int x = 0; x < SCREEN_WIDTH; x += TILE_SIZE) {
+        xx = (xx + 1) % 3;
+        x += xx * TILE_SIZE;
         surface.fillRect(x, TILE_SIZE*8, 1, SCREEN_HEIGHT, 0xff888888);
       }
       surface.fillRect(0, SCREEN_HEIGHT/2, SCREEN_WIDTH, 1, 0xff888888);

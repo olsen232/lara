@@ -22,6 +22,7 @@ public class Lara {
   private int x = NUM_TILES_X / 2;
   private int y = NUM_TILES_Y / 2;
   private Direction facing = Direction.RIGHT;
+  private boolean isCrouched = false;
 
   public void tick() {
     movement.tick();
@@ -36,13 +37,30 @@ public class Lara {
       x += maybeFlip(movement.dx);
       y += movement.dy;
       if (movement.flipX) facing = facing.opposite();
+      if (movement == Movements.TOGGLE_CROUCH) isCrouched = !isCrouched;
 
       ControlState controls = ControlState.INSTANCE;
       Control forwards = facing.control;
       Control backwards = facing.opposite().control;
 
       Animation prevAnim = anim;
-      if (controls.isPressed(forwards)) {
+      Movement prevMovement = movement;
+
+      if (controls.isFresh(Control.JUMP)) {
+        anim = mainSet.JUMP;
+        movement = (prevMovement == Movements.RUN) ? Movements.LONG_JUMP : Movements.JUMP;
+      } else if (controls.isPressed(Control.DOWN)) {
+        if (!isCrouched) {
+          anim = mainSet.CROUCH;
+          movement = Movements.TOGGLE_CROUCH;
+        } else {
+          anim = mainSet.CROUCHED;
+          movement = Movements.NOOP;
+        }
+      } else if (isCrouched) {
+        anim = mainSet.UNCROUCH;
+        movement = Movements.TOGGLE_CROUCH;
+      } else if (controls.isPressed(forwards)) {
         anim = mainSet.RUN;
         movement = Movements.RUN;
       } else if (controls.isPressed(backwards)) {
@@ -65,7 +83,7 @@ public class Lara {
   public void draw(Surface surface) {
     Font.WHITE.singleLine(surface, x + ", " + y, 50, 50);
 
-    surface.fillRect(x * TILE_SIZE, (y - 1) * TILE_SIZE, TILE_SIZE, 2 * TILE_SIZE, 0x88888888);
+    //surface.fillRect(x * TILE_SIZE, (y - 1) * TILE_SIZE, TILE_SIZE, 2 * TILE_SIZE, 0x88888888);
 
     int xPx = x * TILE_SIZE + HALF_TILE_SIZE + maybeFlip(movement.xPx());
     int yPx = (y + 1) * TILE_SIZE + movement.yPx();
@@ -117,6 +135,11 @@ public class Lara {
     Animation TURN =     load("turn", 3)     .slow(2);
     Animation HALF_RUN = load("half_run", 1) .slow(2);
     Animation RUN =      load("run", 12)     .slow(2);
+    Animation CROUCH =   load("crouch", 4);
+    Animation UNCROUCH = CROUCH.reverse();
+    Animation CROUCHED = load("crouched", 1);
+    Animation JUMP =     load("jump", 9)    .slow(2);
+    Animation LAND =     load("land", 1)    .slow(2);
 
     Animation IDLE = sequence(STAND.repeat(5), STRETCH, STAND.repeat(10));
   }
@@ -125,5 +148,8 @@ public class Lara {
     static Movement NOOP = Movement.NOOP;
     static Movement RUN = move().dx(1).length(6).build();
     static Movement TURN = move().flipX().length(6).build();
+    static Movement JUMP = move().dx(3).length(18).build();
+    static Movement LONG_JUMP = move().dx(4).length(18).build();
+    static Movement TOGGLE_CROUCH = move().length(4).build();
   }
 }
